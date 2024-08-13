@@ -1,6 +1,18 @@
 import test, { expect } from "../fixtures/basePages";
 
 test.describe("Premium - General Functionalities, Desktop", () => {
+  test.skip(() => {
+    // Check that E2E_TEST_ACCOUNT_PREMIUM is set to an email
+    const premium_email = process.env.E2E_TEST_ACCOUNT_PREMIUM || "";
+    return premium_email.indexOf("@") === -1;
+  }, "Set E2E_TEST_ACCOUNT_PREMIUM to the Mozilla account email of a premium user");
+
+  test.skip(() => {
+    // Check that E2E_TEST_ACCOUNT_PASSWORD is set
+    const premium_password = process.env.E2E_TEST_ACCOUNT_PASSWORD || "";
+    return premium_password.length === 0;
+  }, "Set E2E_TEST_ACCOUNT_PASSWORD to the Mozilla account password of a premium user");
+
   test.beforeEach(async ({ landingPage, authPage, dashboardPage }) => {
     await landingPage.open();
     await landingPage.goToSignIn();
