@@ -74,7 +74,7 @@ test.describe("Subscription flows @health_check", () => {
   let expectedPhonesEmailsPlanDetails;
   let expectedVPNBundleDetails;
 
-  test.beforeEach(async ({ landingPage }) => {
+  test.beforeEach(async ({ landingPage, runtimeDataPage }) => {
     if (process.env["E2E_TEST_ENV"] === "prod") {
       expectedEmailsPlansDetails = "Relay Premium";
       expectedPhonesEmailsPlanDetails =
@@ -91,17 +91,20 @@ test.describe("Subscription flows @health_check", () => {
       expectedVPNBundleDetails = "Firefox Relay & Mozilla VPN (dev)";
     }
 
-    await landingPage.open();
+    await Promise.all([landingPage.open(), runtimeDataPage.open()]);
   });
 
   test('Verify that the yearly emails plan "Sign Up" button works correctly, C1818792', async ({
     landingPage,
     subscriptionPage,
+    runtimeDataPage,
   }) => {
     test.skip(
       process.env.E2E_TEST_ENV === "dev",
       "Invalid flow in the dev environment.",
     );
+    const [available, skipReason] = runtimeDataPage.checkPremiumAvailable();
+    test.skip(!available, skipReason);
 
     await landingPage.selectYearlyEmailsPlan();
     // verify redirect to subscription page
@@ -117,11 +120,14 @@ test.describe("Subscription flows @health_check", () => {
   test('Verify that the monthly emails plan "Sign Up" button works correctly, C1818792', async ({
     landingPage,
     subscriptionPage,
+    runtimeDataPage,
   }) => {
     test.skip(
       process.env.E2E_TEST_ENV === "dev",
       "Invalid flow in the dev environment.",
     );
+    const [available, skipReason] = runtimeDataPage.checkPremiumAvailable();
+    test.skip(!available, skipReason);
 
     await landingPage.selectMonthlyEmailsPlan();
     // verify redirect to subscription page
@@ -137,7 +143,11 @@ test.describe("Subscription flows @health_check", () => {
   test('Verify that the yearly emails and phones bundle plan "Sign Up" button works correctly, C1818792', async ({
     landingPage,
     subscriptionPage,
+    runtimeDataPage,
   }) => {
+    const [available, skipReason] = runtimeDataPage.checkPhoneAvailable();
+    test.skip(!available, skipReason);
+
     await landingPage.selectYearlyPhonesEmailsBundle();
 
     // verify redirect to subscription page
@@ -153,11 +163,14 @@ test.describe("Subscription flows @health_check", () => {
   test('Verify that the monthly emails and phones bundle plan "Sign Up" button works correctly, C1818792', async ({
     landingPage,
     subscriptionPage,
+    runtimeDataPage,
   }) => {
     test.skip(
       process.env.E2E_TEST_ENV === "dev",
       "Dev environment will redirect to the yearly subscription plan.",
     );
+    const [available, skipReason] = runtimeDataPage.checkPhoneAvailable();
+    test.skip(!available, skipReason);
 
     await landingPage.selectMonthlyPhonesEmailsBundle();
     // verify redirect to subscription page
@@ -173,7 +186,11 @@ test.describe("Subscription flows @health_check", () => {
   test('Verify that the VPN bundle "Sign Up" button works correctly, C1818792', async ({
     landingPage,
     subscriptionPage,
+    runtimeDataPage,
   }) => {
+    const [available, skipReason] = runtimeDataPage.checkBundleAvailable();
+    test.skip(!available, skipReason);
+
     await landingPage.selectVpnBundlePlan();
 
     // verify redirect to subscription page

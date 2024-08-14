@@ -4,6 +4,7 @@ import { test as baseTest } from "@playwright/test";
 import { DashboardPage } from "../pages/dashboardPage";
 import { SubscriptionPaymentPage } from "../pages/subscriptionPaymentPage";
 import { MozillaMonitorPage } from "../pages/mozillaMonitorPage";
+import { RuntimeDataPage } from "../pages/runtimeDataPage";
 
 const test = baseTest.extend<{
   landingPage: LandingPage;
@@ -11,6 +12,7 @@ const test = baseTest.extend<{
   dashboardPage: DashboardPage;
   subscriptionPage: SubscriptionPaymentPage;
   mozillaMonitorPage: MozillaMonitorPage;
+  runtimeDataPage: RuntimeDataPage;
 }>({
   authPage: async ({ page }, use) => {
     await use(new AuthPage(page));
@@ -26,6 +28,9 @@ const test = baseTest.extend<{
   },
   mozillaMonitorPage: async ({ page }, use) => {
     await use(new MozillaMonitorPage(page));
+  },
+  runtimeDataPage: async ({ page }, use) => {
+    await use(new RuntimeDataPage(page));
   },
 });
 
